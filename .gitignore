@@ -1,0 +1,9 @@
+.idea/
+.DS_Store
+
+venv/
+*.egg-info/
+*.pyc
+
+svg/
+*.gstencil/
