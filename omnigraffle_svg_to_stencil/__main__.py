@@ -6,7 +6,7 @@ import shutil
 import sys
 from argparse import ArgumentParser, Namespace
 from itertools import filterfalse, groupby
-from typing import List, Dict
+from typing import List, Dict, Any
 
 import cairosvg
 from PyPDF2.pdf import PdfFileReader
@@ -69,12 +69,12 @@ def parse_arguments() -> Namespace:
     return parser.parse_args()
 
 
-def create_output_dir(dir_name):
+def create_output_dir(dir_name) -> None:
     shutil.rmtree(dir_name, ignore_errors=True)
     os.mkdir(dir_name)
 
 
-def load_image_plist_template():
+def load_image_plist_template() -> Dict[str, Any]:
     return load_plist(image_template_file)
 
 
@@ -111,17 +111,17 @@ def group_images_by_dir(images: List[str]) -> Dict[str, List[str]]:
     return {key: list(items) for key, items in groupby(images, lambda file_name: file_name.split('/')[-2])}
 
 
-def create_data_plist():
+def create_data_plist() -> Dict[str, Any]:
     return load_plist(data_template_file)
 
 
-def create_sheet_plist(sheet_title):
+def create_sheet_plist(sheet_title: str) -> Dict[str, Any]:
     sheet_pl = load_plist(sheet_template_file)
     sheet_pl['SheetTitle'] = sheet_title
     return sheet_pl
 
 
-def add_sheet_to_data(data_pl, sheet_pl):
+def add_sheet_to_data(data_pl: Dict[str, Any], sheet_pl: Dict[str, Any]) -> None:
     images_count = len(sheet_pl['GraphicsList'])
 
     data_pl['Sheets'].append(sheet_pl)
@@ -130,7 +130,8 @@ def add_sheet_to_data(data_pl, sheet_pl):
     data_pl['ImageList'].extend([f'image{image["ID"]}.pdf' for image in sheet_pl['GraphicsList']])
 
 
-def create_image_plist(pdf_image_path, plist_template, idx, stencil_name):
+def create_image_plist(pdf_image_path: str, plist_template: Dict[str, Any], idx: int, stencil_name: str) \
+        -> Dict[str, Any]:
     with open(pdf_image_path, 'rb') as fp:
         input1 = PdfFileReader(fp)
         media_box = input1.getPage(0).mediaBox
@@ -144,11 +145,11 @@ def create_image_plist(pdf_image_path, plist_template, idx, stencil_name):
     return image_pl
 
 
-def add_image_to_sheet(sheet_pl, image_pls):
-    sheet_pl['GraphicsList'].append(image_pls)
+def add_image_to_sheet(sheet_pl: Dict[str, Any], image_pl: Dict[str, Any]) -> None:
+    sheet_pl['GraphicsList'].append(image_pl)
 
 
-def save_image_as_pdf(source, dir_path, idx):
+def save_image_as_pdf(source: str, dir_path: str, idx: int) -> str:
     pdf_path = os.path.join(dir_path, f'image{idx}.pdf')
     cairosvg.svg2pdf(url=source, write_to=pdf_path, dpi=72)
     return pdf_path
@@ -158,7 +159,7 @@ nonprintable = ''.join(c for c in map(chr, range(256)) if not c.isprintable())
 nonprintable_translation_table = dict.fromkeys(map(ord, nonprintable), None)
 
 
-def create_stencil_name(file_path, remove_from_stencil_name):
+def create_stencil_name(file_path: str, remove_from_stencil_name: List[str]) -> str:
     name = os.path.splitext(os.path.basename(file_path))[0]
 
     name = re.sub(r'|'.join(map(re.escape, remove_from_stencil_name)), ' ', name)
@@ -174,7 +175,7 @@ def create_stencil_name(file_path, remove_from_stencil_name):
     return name
 
 
-def save_data_plist(path, data_pl, text_output: bool):
+def save_data_plist(path: str, data_pl: Dict[str, Any], text_output: bool) -> None:
     data_file = os.path.join(path, 'data.plist')
     with open(data_file, 'wb') as fp:
         plistlib.dump(data_pl, fp)
@@ -183,7 +184,7 @@ def save_data_plist(path, data_pl, text_output: bool):
         plistlib.dump(data_pl, fp, fmt=fmt)
 
 
-def load_plist(file_path):
+def load_plist(file_path: str) -> Dict[str, Any]:
     with open(file_path, 'rb') as fp:
         return plistlib.load(fp)
 
