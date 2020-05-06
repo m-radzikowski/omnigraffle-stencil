@@ -6,7 +6,7 @@ import shutil
 import sys
 from argparse import ArgumentParser, Namespace
 from itertools import filterfalse, groupby
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 
 import cairosvg
 from PyPDF2.pdf import PdfFileReader
@@ -43,7 +43,9 @@ def main():
             image_idx += 1
             pdf_image_path = save_image_as_pdf(svg_path, args.stencil_file, image_idx)
             stencil_name = create_stencil_name(svg_path, args.stencil_name_remove)
-            add_image_to_sheet(sheet_pl, create_image_plist(pdf_image_path, image_pl_tpl, image_idx, stencil_name))
+            image_pl = create_image_plist(pdf_image_path, image_pl_tpl, image_idx, stencil_name,
+                                          args.vertex_magnets, args.side_magnets)
+            add_image_to_sheet(sheet_pl, image_pl)
 
         add_sheet_to_data(data_pl, sheet_pl)
 
@@ -57,13 +59,17 @@ def parse_arguments() -> Namespace:
     parser.add_argument('--svg-dir', default='./svg', help='svg files directory path (default: ./svg)')
     parser.add_argument('--stencil-file', default='output.gstencil',
                         help='name of output stencil file (default: output.gstencil)')
-    parser.add_argument('--filename-includes', default=[], action='extend', nargs='*', type=str,
+    parser.add_argument('--filename-includes', default=[], action='extend', nargs='*',
                         help='strings to filter image file name by, taking only those which contains them all')
-    parser.add_argument('--filename-excludes', default=[], action='extend', nargs='*', type=str,
+    parser.add_argument('--filename-excludes', default=[], action='extend', nargs='*',
                         help='strings to filter image file name by, taking only those which do not contain any of them')
-    parser.add_argument('--stencil-name-remove', default=['.', '-', '_'], action='extend', nargs='*', type=str,
+    parser.add_argument('--stencil-name-remove', default=['.', '-', '_'], action='extend', nargs='*',
                         help='strings to be removed from image file name when creating stencil name (default: . - _)')
-    parser.add_argument('--text-output', default=False, action='store_true',
+    parser.add_argument('--no-vertex-magnets', action='store_false', dest='vertex_magnets',
+                        help='don\'t create magnets on vertices (NE, NW, SE, SW)')
+    parser.add_argument('--side-magnets', default=5, type=int,
+                        help='number of magnets for each side (default: 5)')
+    parser.add_argument('--text-output', action='store_true',
                         help='write OmniGraffle data file as text instead of binary')
 
     return parser.parse_args()
@@ -130,8 +136,8 @@ def add_sheet_to_data(data_pl: Dict[str, Any], sheet_pl: Dict[str, Any]) -> None
     data_pl['ImageList'].extend([f'image{image["ID"]}.pdf' for image in sheet_pl['GraphicsList']])
 
 
-def create_image_plist(pdf_image_path: str, plist_template: Dict[str, Any], idx: int, stencil_name: str) \
-        -> Dict[str, Any]:
+def create_image_plist(pdf_image_path: str, plist_template: Dict[str, Any], idx: int, stencil_name: str,
+                       vertex_magnets: bool, side_magnets: int) -> Dict[str, Any]:
     with open(pdf_image_path, 'rb') as fp:
         input1 = PdfFileReader(fp)
         media_box = input1.getPage(0).mediaBox
@@ -142,7 +148,40 @@ def create_image_plist(pdf_image_path: str, plist_template: Dict[str, Any], idx:
     image_pl['ImageID'] = idx
     image_pl['Name'] = stencil_name
 
+    magnet_positions = []
+    if vertex_magnets:
+        magnet_positions.extend(create_vertex_magnets())
+    magnet_positions.extend(create_side_magnets(side_magnets))
+
+    magnets = ['{' + str(pos[0]) + ', ' + str(pos[1]) + '}' for pos in magnet_positions]
+    image_pl['Magnets'] = magnets
+
     return image_pl
+
+
+def create_vertex_magnets() -> List[Tuple[float, float]]:
+    return [
+        (-1, -1),
+        (1, -1),
+        (1, 1),
+        (-1, 1),
+    ]
+
+
+def create_side_magnets(count: int) -> List[Tuple[float, float]]:
+    factor = 2 / (count + 1)
+
+    magnets = []
+    for i in range(1, count + 1):
+        value = -1 + factor * i
+        magnets.extend([
+            (-1, value),
+            (value, -1),
+            (1, value),
+            (value, 1),
+        ])
+
+    return magnets
 
 
 def add_image_to_sheet(sheet_pl: Dict[str, Any], image_pl: Dict[str, Any]) -> None:
@@ -178,7 +217,6 @@ def create_stencil_name(file_path: str, remove_from_stencil_name: List[str]) -> 
 def save_data_plist(path: str, data_pl: Dict[str, Any], text_output: bool) -> None:
     data_file = os.path.join(path, 'data.plist')
     with open(data_file, 'wb') as fp:
-        plistlib.dump(data_pl, fp)
         fmt = plistlib.FMT_XML if text_output else plistlib.FMT_BINARY
         # noinspection PyTypeChecker
         plistlib.dump(data_pl, fp, fmt=fmt)
