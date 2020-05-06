@@ -27,10 +27,6 @@
         <string>NO</string>
         <key>MasterSheets</key>
         <array/>
-        <key>ModificationDate</key>
-        <string>2015-07-09 23:57:06 +0000</string>
-        <key>Modifier</key>
-        <string>Joel Page</string>
         <key>MovementHandleVisible</key>
         <string>NO</string>
         <key>NotesVisible</key>
@@ -99,7 +95,7 @@
             <key>CurrentSheet</key>
             <integer>0</integer>
             <key>Frame</key>
-            <string>{{77, 96}, {1189, 840}}</string>
+            <string>{{100, 100}, {1500, 800}}</string>
             <key>ShowInfo</key>
             <true/>
             <key>Sidebar</key>
