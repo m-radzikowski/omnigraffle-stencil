@@ -38,12 +38,14 @@ def main():
         print(f'Processing {len(group_images)} images from group "{group_name}"')
 
         sheet_pl = create_sheet_plist(group_name)
+        sheet_image_bounds = []
 
         for svg_path in group_images:
             image_idx += 1
             pdf_image_path = save_image_as_pdf(svg_path, args.stencil_file, image_idx)
             stencil_name = create_stencil_name(svg_path, args.stencil_name_remove)
-            image_pl = create_image_plist(pdf_image_path, image_pl_tpl, image_idx, stencil_name,
+            sheet_image_bounds.append(calc_next_image_bounds(pdf_image_path, sheet_image_bounds))
+            image_pl = create_image_plist(image_pl_tpl, image_idx, stencil_name, sheet_image_bounds[-1],
                                           args.vertex_magnets, args.side_magnets)
             add_image_to_sheet(sheet_pl, image_pl)
 
@@ -136,14 +138,39 @@ def add_sheet_to_data(data_pl: Dict[str, Any], sheet_pl: Dict[str, Any]) -> None
     data_pl['ImageList'].extend([f'image{image["ID"]}.pdf' for image in sheet_pl['GraphicsList']])
 
 
-def create_image_plist(pdf_image_path: str, plist_template: Dict[str, Any], idx: int, stencil_name: str,
-                       vertex_magnets: bool, side_magnets: int) -> Dict[str, Any]:
+def calc_next_image_bounds(pdf_image_path: str, sheet_image_bounds: List[Tuple[int, int, int, int]]) \
+        -> Tuple[int, int, int, int]:
     with open(pdf_image_path, 'rb') as fp:
         input1 = PdfFileReader(fp)
         media_box = input1.getPage(0).mediaBox
 
+    _, _, width, height = media_box
+    space_between = 50
+
+    if len(sheet_image_bounds) == 0:
+        x = 0
+        y = 0
+    elif len(sheet_image_bounds) > 1 and (len(sheet_image_bounds)) % 5 == 0:
+        last_line_bounds = sheet_image_bounds[-5:]
+        _, prev_y, _, _ = last_line_bounds[0]
+
+        max_last_line_height = max(bounds[3] for bounds in last_line_bounds)
+
+        x = 0
+        y = prev_y + max_last_line_height + space_between
+    else:
+        prev_x, prev_y, prev_width, prev_height = sheet_image_bounds[-1]
+        x = prev_x + prev_width + space_between
+        y = prev_y
+
+    return x, y, width, height
+
+
+def create_image_plist(plist_template: Dict[str, Any], idx: int, stencil_name: str, bounds: Tuple[int, int, int, int],
+                       vertex_magnets: bool, side_magnets: int) -> Dict[str, Any]:
     image_pl = plist_template.copy()
-    image_pl['Bounds'] = '{{0, 0}, {' + str(media_box[2]) + ', ' + str(media_box[3]) + '}}'
+    image_pl['Bounds'] = '{{' + str(bounds[0]) + ', ' + str(bounds[1]) + '},' + \
+                         '{' + str(bounds[2]) + ', ' + str(bounds[3]) + '}}'
     image_pl['ID'] = idx
     image_pl['ImageID'] = idx
     image_pl['Name'] = stencil_name
