@@ -252,7 +252,3 @@ def save_data_plist(path: str, data_pl: Dict[str, Any], text_output: bool) -> No
 def load_plist(file_path: str) -> Dict[str, Any]:
     with open(file_path, 'rb') as fp:
         return plistlib.load(fp)
-
-
-if __name__ == '__main__':
-    main()

@@ -1,9 +1,18 @@
 [tool.poetry]
-name = "omnigraffle-svg-to-stencil"
+name = "omnigraffle-stencil"
 version = "1.0.0"
-description = "Create OmniGraffle stencil from SVG icons"
+description = "Tool to create OmniGraffle stencils from SVG icons"
 authors = ["Maciej Radzikowski <maciej@radzikowski.com.pl>"]
 license = "MIT"
+readme = "README.md"
+repository = "https://gitlab.com/mradzikowski/omnigraffle-stencil"
+keywords = ["omnigraffle", "stencil", "svg"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Operating System :: MacOS :: MacOS X",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion"
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -11,6 +20,9 @@ cairosvg = "2.4.2"
 PyPDF2 = "1.26.0"
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+omnigraffle-stencil = "omnigraffle_stencil.converter:main"
 
 [build-system]
 requires = ["poetry>=0.12"]
