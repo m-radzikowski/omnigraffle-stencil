@@ -11,7 +11,7 @@ from typing import List, Dict, Any, Tuple
 import cairosvg
 from PyPDF2.pdf import PdfFileReader
 
-templates_dir = 'templates'
+templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 data_template_file = os.path.join(templates_dir, 'data.plist')
 sheet_template_file = os.path.join(templates_dir, 'sheet.plist')
 image_template_file = os.path.join(templates_dir, 'image.plist')

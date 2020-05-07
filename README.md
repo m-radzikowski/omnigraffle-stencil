@@ -30,7 +30,7 @@ omnigraffle-stencil --help
 
 to see all options:
 
-```bash
+```
 usage: omnigraffle-stencil [-h] [--svg-dir SVG_DIR] [--stencil-file STENCIL_FILE] [--filename-includes [FILENAME_INCLUDES [FILENAME_INCLUDES ...]]] [--filename-excludes [FILENAME_EXCLUDES [FILENAME_EXCLUDES ...]]]
                            [--stencil-name-remove [STENCIL_NAME_REMOVE [STENCIL_NAME_REMOVE ...]]] [--no-vertex-magnets] [--side-magnets SIDE_MAGNETS] [--text-output]
 
@@ -111,4 +111,13 @@ Run script:
 
 ```bash
 poetry run omnigraffle-stencil
+```
+
+## Publishing
+
+Build and publish package:
+
+```bash
+poetry build
+poetry publish
 ```
