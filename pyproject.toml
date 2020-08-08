@@ -5,7 +5,7 @@ description = "Tool to create OmniGraffle stencils from SVG icons"
 authors = ["Maciej Radzikowski <maciej@radzikowski.com.pl>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://gitlab.com/mradzikowski/omnigraffle-stencil"
+repository = "https://github.com/m-radzikowski/omnigraffle-stencil"
 keywords = ["omnigraffle", "stencil", "svg"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
