@@ -47,6 +47,8 @@ optional arguments:
                         strings to filter image file name by, taking only those which do not contain any of them
   --stencil-name-remove [STENCIL_NAME_REMOVE [STENCIL_NAME_REMOVE ...]]
                         strings to be removed from image file name when creating stencil name (default: . - _)
+  --group-name-remove GROUP_NAME_REMOVE [GROUP_NAME_REMOVE ...]
+                        strings to be removed from group (sheet) name (default: . - _)
   --no-vertex-magnets   don't create magnets on vertices (NE, NW, SE, SW)
   --side-magnets SIDE_MAGNETS
                         number of magnets for each side (default: 5)
