@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "omnigraffle-stencil"
-version = "1.0.0"
+version = "1.1.0"
 description = "Tool to create OmniGraffle stencils from SVG icons"
 authors = ["Maciej Radzikowski <maciej@radzikowski.com.pl>"]
 license = "MIT"
