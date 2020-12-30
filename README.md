@@ -75,20 +75,24 @@ svg/
 To generate icons from
 [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/)
 download SVG zip file
-(example: [AWS-Architecture-Icons_SVG_20200430](https://d1.awsstatic.com/webteam/architecture-icons/AWS-Architecture-Icons_SVG_20200430.974b253cb3059403544585500365fb828d305321.zip))
+(example: [AWS-Architecture-Assets-For-Light-and-Dark-BG_20200911](https://d1.awsstatic.com/webteam/architecture-icons/Q32020/AWS-Architecture-Assets-For-Light-and-Dark-BG_20200911.478ff05b80f909792f7853b1a28de8e28eac67f4.zip))
 and unpack it.
 
 Run script with options:
 
 ```bash
 omnigraffle-stencil \
-    --svg-dir "AWS-Architecture-Icons_SVG_20200430/SVG Light" \
-    --stencil-file AWS_2020_light.gstencil \
-    --filename-includes light-bg \
-    --stencil-name-remove . - _ light-bg
+    --svg-dir "AWS-Architecture-Assets-For-Light-and-Dark-BG_20200911/AWS-Architecture-Service-Icons_20200911" \
+    --stencil-file AWS_20200911_Services.gstencil \
+    --filename-includes _48 \
+    --stencil-name-remove Arch_ _48 . - _ \
+    --group-name-remove Arch_ . - _
 ```
 
-Output stencil will be created as `AWS_2020_light.gstencil`.
+Output stencil will be created as `AWS_20200911_Services.gstencil`.
+
+Check out the [AWS stencil in Stenciltown](https://stenciltown.omnigroup.com/stencils/aws-2020-09-11-all/) -
+it contains all Service and Resource icons.
 
 ## Development
 
@@ -100,6 +104,9 @@ Install dependencies in virtual env:
 poetry shell
 poetry install
 ```
+
+Troubleshooting installing `pillow` library on MacOS:
+https://akrabat.com/installing-pillow-on-macos-10-15-calatalina/
 
 Get virtual env path for the IDE:
 
