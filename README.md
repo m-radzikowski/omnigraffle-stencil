@@ -74,10 +74,42 @@ svg/
 
 ### AWS Architecture Icons example
 
-To generate icons from
-[AWS Architecture Icons](https://aws.amazon.com/architecture/icons/)
-download SVG zip file
-(example: [AWS-Architecture-Assets-For-Light-and-Dark-BG_20200911](https://d1.awsstatic.com/webteam/architecture-icons/Q32020/AWS-Architecture-Assets-For-Light-and-Dark-BG_20200911.478ff05b80f909792f7853b1a28de8e28eac67f4.zip))
+As an example, we can generate stencil from
+[AWS Architecture Icons](https://aws.amazon.com/architecture/icons/).
+
+New AWS Icons are published from time to time.
+Different versions have different directories structure.
+
+### v20210131
+
+Download
+[AWS-Architecture_Asset-Package_20210131](https://d1.awsstatic.com/webteam/architecture-icons/q1-2021/AWS-Architecture_Asset-Package_20210131.a41ffeeec67743738315c2585f5fdb6f3c31238d.zip)
+and unpack it.
+
+It contains 3 more zip files.
+Service, Category, and Resource icons are in separate packages.
+Unpack `Architecture-Service-Icons_01-31-2021.zip`.
+
+Run script with options:
+
+```bash
+omnigraffle-stencil \
+    --svg-dir "Asset-Package_20210131/Architecture-Service-Icons_01-31-2021" \
+    --stencil-file AWS_20210131_Services.gstencil \
+    --filename-includes _48 \
+    --stencil-name-remove Arch_ _48 . - _ \
+    --group-name-remove Arch_ . - _
+```
+
+Output stencil will be created as `AWS_20210131_Services.gstencil`.
+
+Check out the [AWS 2021-01-31 stencil in Stenciltown](https://stenciltown.omnigroup.com/stencils/aws-2021-01-31-all/) -
+it contains all Category, Service, and Resource icons.
+
+### v20200911
+
+Download
+[AWS-Architecture-Assets-For-Light-and-Dark-BG_20200911](https://d1.awsstatic.com/webteam/architecture-icons/Q32020/AWS-Architecture-Assets-For-Light-and-Dark-BG_20200911.478ff05b80f909792f7853b1a28de8e28eac67f4.zip)
 and unpack it.
 
 Run script with options:
@@ -93,7 +125,7 @@ omnigraffle-stencil \
 
 Output stencil will be created as `AWS_20200911_Services.gstencil`.
 
-Check out the [AWS stencil in Stenciltown](https://stenciltown.omnigroup.com/stencils/aws-2020-09-11-all/) -
+Check out the [AWS 2020-09-11 stencil in Stenciltown](https://stenciltown.omnigroup.com/stencils/aws-2020-09-11-all/) -
 it contains all Service and Resource icons.
 
 ## Development
