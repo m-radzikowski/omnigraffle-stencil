@@ -47,7 +47,7 @@ def main():
             stencil_name = create_name(svg_path, args.stencil_name_remove)
             sheet_image_bounds.append(calc_next_image_bounds(pdf_image_path, sheet_image_bounds))
             image_pl = create_image_plist(image_pl_tpl, image_idx, stencil_name, sheet_image_bounds[-1],
-                                          args.vertex_magnets, args.side_magnets)
+                                          args.vertex_magnets, args.side_magnets, args.label_icons)
             add_image_to_sheet(sheet_pl, image_pl)
 
         add_sheet_to_data(data_pl, sheet_pl)
@@ -80,6 +80,8 @@ def parse_arguments() -> Namespace:
                         help='number of magnets for each side (default: 5)')
     parser.add_argument('--text-output', action='store_true',
                         help='write OmniGraffle data file as text instead of binary')
+    parser.add_argument('--label-icons', action='store_true',
+                        help='adds the text label to icon, bottom centre')
 
     args = parser.parse_args()
 
@@ -200,7 +202,7 @@ def calc_next_image_bounds(pdf_image_path: str, sheet_image_bounds: List[Tuple[i
 
 
 def create_image_plist(plist_template: Dict[str, Any], idx: int, stencil_name: str, bounds: Tuple[int, int, int, int],
-                       vertex_magnets: bool, side_magnets: int) -> Dict[str, Any]:
+                       vertex_magnets: bool, side_magnets: int, label_icon: bool) -> Dict[str, Any]:
     image_pl = plist_template.copy()
     image_pl['Bounds'] = '{{' + str(bounds[0]) + ', ' + str(bounds[1]) + '},' + \
                          '{' + str(bounds[2]) + ', ' + str(bounds[3]) + '}}'
@@ -215,6 +217,11 @@ def create_image_plist(plist_template: Dict[str, Any], idx: int, stencil_name: s
 
     magnets = ['{' + str(pos[0]) + ', ' + str(pos[1]) + '}' for pos in magnet_positions]
     image_pl['Magnets'] = magnets
+
+    if label_icon:
+        image_pl['Wrap'] = "NO"
+        image_pl['TextRelativeArea'] = "{{0, 0.66}, {1, 1}}"
+        image_pl['Text'] = {"Text": "{\\rtf1\\ansi\\ansicpg1252\\cocoartf2580\\cocoatextscaling0\\cocoaplatform0{\\fonttbl\\f0\fnil\\fcharset0 HelveticaNeue;}{\\colortbl;\\red255\\green255\\blue255;\\red0\green0\\blue0;}{\\*\\expandedcolortbl;;\\cssrgb\\c0\\c0\\c0;}\\paperw11900\\paperh16840\\vieww12000\\viewh15840\\viewkind0\\pard\\tx720\\tx1440\\tx2160\\tx2880\\tx3600\\tx4320\\tx5040\\tx5760\\tx6480\\tx7200\\tx7920\\tx8640\\pardirnatural\\qc\\partightenfactor0\\f0\\fs24 \\cf2 " + stencil_name + "}", "TextAlongPathGlyphAnchor": "center"}
 
     return image_pl
 
