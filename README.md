@@ -54,6 +54,7 @@ optional arguments:
                         number of magnets for each side (default: 5)
   --text-output         write OmniGraffle data file as text instead of binary
   --label-icons         add a label, derived from the icon name, to the bottom centre of the icon
+```
 
 Input files are taken from the given location (`./svg` by default)
 and should be grouped into directories.
