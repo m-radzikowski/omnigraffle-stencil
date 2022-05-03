@@ -1,5 +1,9 @@
 # OmniGraffle Stencil generator
 
+**Important:** this repository is archived. Its functionality was merged into [icons-asset-generator](https://github.com/m-radzikowski/icons-asset-generator)
+
+---
+
 Tool to create [OmniGraffle](https://www.omnigroup.com/omnigraffle/)
 stencils from SVG icons.
 
